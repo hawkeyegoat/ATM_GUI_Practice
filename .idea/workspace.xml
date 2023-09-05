@@ -4,19 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1993f82f-5451-41b1-a06f-050e86e8349f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ATM GUI Practice.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/logins.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Model/Data.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/View/DrawATM.java" afterDir="false" />
+    <list default="true" id="1993f82f-5451-41b1-a06f-050e86e8349f" name="Changes" comment="A lot of stuff working">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts.txt" beforeDir="false" afterPath="$PROJECT_DIR$/accounts.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logins.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Model/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Data.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,9 +76,34 @@
       <option name="presentableId" value="Default" />
       <updated>1693611855518</updated>
     </task>
+    <task id="LOCAL-00001" summary="A lot of stuff working">
+      <created>1693636859002</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1693636859002</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="A lot of stuff working" />
+    <option name="LAST_COMMIT_MESSAGE" value="A lot of stuff working" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/Model/Data.java</url>
+          <line>174</line>
+          <properties class="Model.Data" method="logIn">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

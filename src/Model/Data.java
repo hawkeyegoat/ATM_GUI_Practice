@@ -1,5 +1,7 @@
 package Model;
 
+import Controller.Main;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -25,19 +27,20 @@ public class Data {
     private static FileReader accountsReader;
     private BigDecimal myBalance;
     private String myUserName;
-    private int myPinCode;
+    private String myPinCode;
     private String myPassword; //Will change in order to encrypt later
     private BigDecimal myWallet;
+    //private double myWallet;
     public static HashMap logins = new HashMap<String, String>();
     public static ArrayList accounts = new ArrayList<Data>();
 
-    public Data(String userName, int pinCode, String password, BigDecimal wallet) {
+    public Data(String userName, BigDecimal balance, String pinCode, String password) {
         //myUserID = userID;
         myUserName = userName;
         myPinCode = pinCode;
         myPassword = password;
-        myWallet = wallet;
-        myBalance = new BigDecimal(0.00);
+        myWallet = BigDecimal.valueOf(0);
+        myBalance = balance;
     }
     public BigDecimal getMyBalance() {
         return myBalance;
@@ -46,6 +49,108 @@ public class Data {
         return myWallet;
     }
     public static void loadData() {
+        StringBuilder stb = new StringBuilder();
+        try {
+            loginsReader = new FileReader(new File("logins.txt"));
+            String tempLogins = Files.readString(Path.of("logins.txt"));
+            String tempKey = "";
+            if(tempLogins.length() == 0) {
+                return;
+            }
+                tempLogins = tempLogins.substring(1);
+
+            for (int i = 0; i < tempLogins.length(); i++) {
+                if (tempLogins.charAt(i) == '=') {
+                    tempKey = stb.toString();
+                    stb.delete(0, stb.length());
+                }
+                else if (tempLogins.charAt(i) == '}') {
+                    String tempValue = stb.toString();
+                    stb.delete(0, stb.length());
+                    logins.put(tempKey, tempValue);
+                    tempValue = "";
+                    tempKey = "";
+                }
+                else {
+                    stb.append(tempLogins.charAt(i));
+                }
+            }
+            stb.delete(0, stb.length());
+        }
+        catch (IOException e) {
+            System.out.println("logins file not found");
+        }
+        try {
+            accountsReader = new FileReader(new File("accounts.txt"));
+            String tempAccounts = Files.readString(Path.of("accounts.txt"));
+            StringBuilder tempReader = new StringBuilder();
+            String tempPassword = "";
+            String tempUsername = "";
+            String tempPIN = "";
+            String tempWallet = "";
+            String tempBalance = "";
+
+            int i = 1;
+            int j = 0;
+            while (true) {
+                if (tempAccounts.charAt(j) == ',') {
+                    break;
+                }
+                else if (tempAccounts.charAt(j) == ':') {
+                    if (i == 1) {
+                        tempUsername = tempReader.toString();
+                    }
+                    if (i == 2) {
+                        tempWallet = tempReader.toString();
+                    }
+                    if (i == 3) {
+                        tempPIN = tempReader.toString();
+                    }
+                    if (i == 4) {
+                        tempPassword = tempReader.toString();
+                    }
+                    if (i == 5) {
+                        tempBalance = tempReader.toString();
+                    }
+                }
+
+                else {
+                    tempReader.append(tempAccounts.charAt(j));
+                }
+                j++;
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Accounts file not found");
+        }
+    }
+    public static Data signUp(String userName, String password, String pinCode, BigDecimal wallet)  {
+
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println("Please enter a valid username");
+//        String tempName = sc.nextLine();
+//        System.out.println("Please enter a 4 number pincode");
+//        int tempCode = sc.nextInt();
+//        System.out.println("please enter a strong password");
+//        String tempPassword = sc.next();
+//        byte[] salt = new String("12345678").getBytes();
+//        int iterationCount = 40000;
+//        int keyLength = 128;
+//        SecretKeySpec key = createSecretKey(tempPassword.toCharArray(),
+//                salt, iterationCount, keyLength);
+//        System.out.println("Original password: " + tempPassword);
+//        String tempEncryptedPassword = encrypt(tempPassword, key);
+//        System.out.println("Encrypted password: " + tempEncryptedPassword);
+        //System.out.println("Please enter how much money you have");
+        //BigDecimal tempWallet = new BigDecimal(sc.nextDouble());
+        //sc.close();
+        if (logins.containsKey(userName)) {
+            Main.showIncorrectCredentials();
+            throw new IllegalArgumentException("Username already exists");
+        }
+        Data accountInfo = new Data(userName, wallet, pinCode, password); //MAY BE WRONG STUFF
+        accounts.add(accountInfo);
+        logins.put(accountInfo.myUserName, accountInfo.myPassword);
         try {
             loginsWriter = new FileWriter(new File("logins.txt"));
             loginsWriter.write(logins.toString());
@@ -62,95 +167,55 @@ public class Data {
             accountsWriter.close();
         }
         catch (IOException e) {
-            System.out.println("accounts text file not found");
+            throw new RuntimeException("accounts text file not found");
         }
-    }
-    public static Data signUp() throws GeneralSecurityException, UnsupportedEncodingException {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Please enter a valid username");
-        String tempName = sc.nextLine();
-        System.out.println("Please enter a 4 number pincode");
-        int tempCode = sc.nextInt();
-        System.out.println("please enter a strong password");
-        String tempPassword = sc.next();
-//        byte[] salt = new String("12345678").getBytes();
-//        int iterationCount = 40000;
-//        int keyLength = 128;
-//        SecretKeySpec key = createSecretKey(tempPassword.toCharArray(),
-//                salt, iterationCount, keyLength);
-//        System.out.println("Original password: " + tempPassword);
-//        String tempEncryptedPassword = encrypt(tempPassword, key);
-//        System.out.println("Encrypted password: " + tempEncryptedPassword);
-        System.out.println("Please enter how much money you have");
-        BigDecimal tempWallet = new BigDecimal(sc.nextDouble());
-        sc.close();
-        if (logins.containsKey(tempName)) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-        Data accountInfo = new Data(tempName, tempCode, tempPassword, tempWallet);
-        accounts.add(accountInfo);
-        logins.put(accountInfo.myUserName, accountInfo.myPassword);
-//        try {
-//            loginsWriter = new FileWriter(new File("logins.txt"));
-//            loginsWriter.write(logins.toString());
-//            loginsWriter.flush();
-//            loginsWriter.close();
-//        }
-//        catch (IOException e) {
-//            System.out.println("logins text file not found");
-//        }
-//        try {
-//            accountsWriter = new FileWriter(new File("accounts.txt"));
-//            accountsWriter.write(accounts.toString());
-//            accountsWriter.flush();
-//            accountsWriter.close();
-//        }
-//        catch (IOException e) {
-//            System.out.println("accounts text file not found");
-//        }
 
         return (Data)accounts.get(accounts.size()-1);
     }
-    public static Data logIn() throws GeneralSecurityException, UnsupportedEncodingException {
-        Scanner sc = new Scanner(System.in);
-        StringBuilder stb = new StringBuilder();
-        //while (true) {
-            try {
-                loginsReader = new FileReader(new File("logins.txt"));
-                //StringBuilder tempLogins = new StringBuilder();
-                String tempLogins = Files.readString(Path.of("logins.txt"));
-                //while (loginsReader) {
-                   // tempLogins.append(loginsReader.read());
-               // }
-                        //loginsReader.toString();
-                //System.out.println(tempLogins);
-                String tempKey = "";
-                tempLogins = tempLogins.substring(1);
-                for (int i = 0; i < tempLogins.length(); i++) {
-                    if (tempLogins.charAt(i) == '=') {
-                        tempKey = stb.toString();
-                        stb.delete(0, stb.length());
-                    }
-                    else if (tempLogins.charAt(i) == '}') {
-                        String tempValue = stb.toString();
-                        stb.delete(0, stb.length());
-                        logins.put(tempKey, tempValue);
-                        tempValue = "";
-                        tempKey = "";
-                    }
-                    else {
-                        stb.append(tempLogins.charAt(i));
-                    }
-                }
-            }
-            catch (IOException e) {
-                System.out.println("logins file not found");
-            }
-            System.out.println(logins);
-            System.out.println("Please enter a valid username");
-            String tempName = sc.nextLine();
-            System.out.println("please enter a valid password");
-            String tempPassword = sc.next();
+    public static Boolean logIn(String userName, String password) {
+        //below was for testing with system
+
+//        Scanner sc = new Scanner(System.in);
+//        StringBuilder stb = new StringBuilder();
+//        //while (true) {
+//            try {
+//                loginsReader = new FileReader(new File("logins.txt"));
+//                //StringBuilder tempLogins = new StringBuilder();
+//                String tempLogins = Files.readString(Path.of("logins.txt"));
+//                //while (loginsReader) {
+//                   // tempLogins.append(loginsReader.read());
+//               // }
+//                        //loginsReader.toString();
+//                //System.out.println(tempLogins);
+//                String tempKey = "";
+//                tempLogins = tempLogins.substring(1);
+//                for (int i = 0; i < tempLogins.length(); i++) {
+//                    if (tempLogins.charAt(i) == '=') {
+//                        tempKey = stb.toString();
+//                        stb.delete(0, stb.length());
+//                    }
+//                    else if (tempLogins.charAt(i) == '}') {
+//                        String tempValue = stb.toString();
+//                        stb.delete(0, stb.length());
+//                        logins.put(tempKey, tempValue);
+//                        tempValue = "";
+//                        tempKey = "";
+//                    }
+//                    else {
+//                        stb.append(tempLogins.charAt(i));
+//                    }
+//                }
+//            }
+//            catch (IOException e) {
+//                System.out.println("logins file not found");
+//            }
+//            System.out.println(logins);
+//            System.out.println("Please enter a valid username");
+//            String tempName = sc.nextLine();
+//            System.out.println("please enter a valid password");
+//            String tempPassword = sc.next();
+
+
 //            byte[] salt = new String("12345678").getBytes();
 //            int iterationCount = 40000;
 //            int keyLength = 128;
@@ -158,18 +223,21 @@ public class Data {
 //                salt, iterationCount, keyLength);
 //        System.out.println("Original password: " + tempPassword);
 //        String tempEncryptedPassword = encrypt(tempPassword, key);
-        if(logins.containsKey(tempName)) {
-            if (logins.get(tempName).equals(tempPassword)) {
+        if(logins.containsKey(userName)) {
+            if (logins.get(userName).equals(password)) {
                 System.out.println(accounts);
-                return (Data) accounts.get(accounts.indexOf(tempName));
+                //return (Data) accounts.get(accounts.indexOf(userName) - 1);
+                return true;
             } else {
-                System.out.println("Username and password do not match");
-                return null;
+                //System.out.println("Username and password do not match");
+                Main.showIncorrectCredentials();
+                return false;
             }
         }
         else {
+            Main.showIncorrectCredentials();
             System.out.println("Username and password do not match");
-            return null;
+            return false;
         }
         //}
     }
@@ -196,7 +264,7 @@ public class Data {
         }
         else {
             myBalance.add(amount);
-            myWallet.subtract(amount);
+            //myWallet.subtract(amount);
         }
         System.out.println("Money in wallet: " + myWallet);
         System.out.println("Money in bank: " + myBalance);
@@ -208,6 +276,12 @@ public class Data {
         sb.append(myUserName);
         sb.append(":");
         //sb.append(" Balance:");
+        sb.append(myBalance);
+        sb.append(":");
+        sb.append(myPinCode);
+        sb.append(":");
+        sb.append(myPassword);
+        sb.append(":");
         sb.append(myBalance);
         sb.append(",");
         return sb.toString();
