@@ -1,1 +1,1 @@
-{hawkeyegoat=password}
+{hawkeyegoat=password, rosecoy=cats}

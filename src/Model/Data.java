@@ -34,12 +34,12 @@ public class Data {
     public static HashMap logins = new HashMap<String, String>();
     public static ArrayList accounts = new ArrayList<Data>();
 
-    public Data(String userName, BigDecimal balance, String pinCode, String password) {
+    public Data(String userName, BigDecimal balance, String pinCode, String password, BigDecimal wallet) {
         //myUserID = userID;
         myUserName = userName;
         myPinCode = pinCode;
         myPassword = password;
-        myWallet = BigDecimal.valueOf(0);
+        myWallet = wallet;
         myBalance = balance;
     }
     public BigDecimal getMyBalance() {
@@ -93,24 +93,35 @@ public class Data {
             int i = 1;
             int j = 0;
             while (true) {
-                if (tempAccounts.charAt(j) == ',') {
+                if (tempAccounts.charAt(j) == ']') {
                     break;
                 }
                 else if (tempAccounts.charAt(j) == ':') {
                     if (i == 1) {
                         tempUsername = tempReader.toString();
+                        tempReader.delete(0, tempReader.length() - 1);
+                        i++;
                     }
-                    if (i == 2) {
+                    else if (i == 2) {
                         tempWallet = tempReader.toString();
+                        tempReader.delete(0, tempReader.length() - 1);
+                        i++;
                     }
-                    if (i == 3) {
+                    else if (i == 3) {
                         tempPIN = tempReader.toString();
+                        tempReader.delete(0, tempReader.length() - 1);
+                        i++;
                     }
-                    if (i == 4) {
+                    else if (i == 4) {
                         tempPassword = tempReader.toString();
+                        tempReader.delete(0, tempReader.length() - 1);
+                        i++;
                     }
-                    if (i == 5) {
+                    else if (i == 5) {
                         tempBalance = tempReader.toString();
+                        tempReader.delete(0, tempReader.length() - 1);
+                        i++;
+                        accounts.add(new Data (tempUsername, BigDecimal.valueOf(Double.valueOf(tempBalance)), tempPIN, tempPassword, BigDecimal.valueOf(Double.valueOf(tempWallet))));
                     }
                 }
 
@@ -148,9 +159,10 @@ public class Data {
             Main.showIncorrectCredentials();
             throw new IllegalArgumentException("Username already exists");
         }
-        Data accountInfo = new Data(userName, wallet, pinCode, password); //MAY BE WRONG STUFF
-        accounts.add(accountInfo);
-        logins.put(accountInfo.myUserName, accountInfo.myPassword);
+        //Data accountInfo = new Data(userName, new BigDecimal(0), pinCode, password, wallet); //MAY BE WRONG STUFF
+        accounts.add(new Data(userName, new BigDecimal(0), pinCode, password, wallet));
+        logins.put(userName, password);
+        //logins.put(accountInfo.myUserName, accountInfo.myPassword);
         try {
             loginsWriter = new FileWriter(new File("logins.txt"));
             loginsWriter.write(logins.toString());
@@ -226,6 +238,7 @@ public class Data {
         if(logins.containsKey(userName)) {
             if (logins.get(userName).equals(password)) {
                 System.out.println(accounts);
+
                 //return (Data) accounts.get(accounts.indexOf(userName) - 1);
                 return true;
             } else {
@@ -236,7 +249,7 @@ public class Data {
         }
         else {
             Main.showIncorrectCredentials();
-            System.out.println("Username and password do not match");
+            //System.out.println("Username and password do not match");
             return false;
         }
         //}
@@ -282,7 +295,7 @@ public class Data {
         sb.append(":");
         sb.append(myPassword);
         sb.append(":");
-        sb.append(myBalance);
+        sb.append(myWallet);
         sb.append(",");
         return sb.toString();
     }

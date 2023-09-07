@@ -172,7 +172,7 @@ public class Main implements ActionListener {
             Data.logIn(logInusername.getText(), logInPassword.getText());
         }
         if (e.getSource().equals(signUpButton2)) {
-            Data.signUp(signUpUserName.getText(), signUpPassword.getText(), pincode.getText(), new BigDecimal(1000.00));
+            Data.signUp(signUpUserName.getText(), signUpPassword.getText(), pincode.getText(), new BigDecimal(Double.valueOf(wallet.getText())));
         }
 
     }
