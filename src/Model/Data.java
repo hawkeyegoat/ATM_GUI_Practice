@@ -32,7 +32,7 @@ public class Data {
     private BigDecimal myWallet;
     //private double myWallet;
     public static HashMap logins = new HashMap<String, String>();
-    public static ArrayList accounts = new ArrayList<Data>();
+    public static ArrayList<Data> accounts = new ArrayList<Data>();
 
     public Data(String userName, BigDecimal balance, String pinCode, String password, BigDecimal wallet) {
         //myUserID = userID;
@@ -47,6 +47,22 @@ public class Data {
     }
     public BigDecimal getMyWallet() {
         return myWallet;
+    }
+    public String getMyUserName() {
+        return myUserName;
+    }
+    public static Data getUser(String userName) {
+        //System.out.println(accounts);
+        int currentUser = searchAccountsByName(userName);
+        return accounts.get(currentUser);
+    }
+    private static int searchAccountsByName(String myUserName) {
+        for (int i = 0; i < accounts.size(); i ++) {
+            if (accounts.get(i).getMyUserName().equals(myUserName)) {
+                return i;
+            }
+        }
+        return -1;
     }
     public static void loadData() {
         StringBuilder stb = new StringBuilder();
@@ -83,7 +99,9 @@ public class Data {
         try {
             accountsReader = new FileReader(new File("accounts.txt"));
             String tempAccounts = Files.readString(Path.of("accounts.txt"));
+            tempAccounts = tempAccounts.substring(1);
             StringBuilder tempReader = new StringBuilder();
+            //tempReader.substring(1, tempReader.length());
             String tempPassword = "";
             String tempUsername = "";
             String tempPIN = "";
@@ -94,34 +112,46 @@ public class Data {
             int j = 0;
             while (true) {
                 if (tempAccounts.charAt(j) == ']') {
+                    tempWallet = tempReader.toString();
+                    tempReader.delete(0, tempReader.length());
+                    i++;
+                    accounts.add(new Data (tempUsername, BigDecimal.valueOf(Double.valueOf(tempBalance)), tempPIN, tempPassword, BigDecimal.valueOf(Double.valueOf(tempWallet))));
+                    break;
+                }
+                else if (tempAccounts.charAt(j) == ',') {
+                    tempWallet = tempReader.toString();
+                    tempReader.delete(0, tempReader.length());
+                    i++;
+                    accounts.add(new Data (tempUsername, BigDecimal.valueOf(Double.valueOf(tempBalance)), tempPIN, tempPassword, BigDecimal.valueOf(Double.valueOf(tempWallet))));
                     break;
                 }
                 else if (tempAccounts.charAt(j) == ':') {
                     if (i == 1) {
                         tempUsername = tempReader.toString();
-                        tempReader.delete(0, tempReader.length() - 1);
+                        tempReader.delete(0, tempReader.length());
                         i++;
                     }
                     else if (i == 2) {
-                        tempWallet = tempReader.toString();
-                        tempReader.delete(0, tempReader.length() - 1);
+                        tempBalance = tempReader.toString();
+                        tempReader.delete(0, tempReader.length());
                         i++;
                     }
                     else if (i == 3) {
                         tempPIN = tempReader.toString();
-                        tempReader.delete(0, tempReader.length() - 1);
+                        tempReader.delete(0, tempReader.length());
                         i++;
                     }
                     else if (i == 4) {
                         tempPassword = tempReader.toString();
-                        tempReader.delete(0, tempReader.length() - 1);
+                        tempReader.delete(0, tempReader.length());
                         i++;
                     }
                     else if (i == 5) {
-                        tempBalance = tempReader.toString();
-                        tempReader.delete(0, tempReader.length() - 1);
+                        tempWallet = tempReader.toString();
+                        tempReader.delete(0, tempReader.length());
                         i++;
                         accounts.add(new Data (tempUsername, BigDecimal.valueOf(Double.valueOf(tempBalance)), tempPIN, tempPassword, BigDecimal.valueOf(Double.valueOf(tempWallet))));
+                        //NEVER REACHES THIS STATEMENT
                     }
                 }
 
@@ -135,7 +165,7 @@ public class Data {
             throw new RuntimeException("Accounts file not found");
         }
     }
-    public static Data signUp(String userName, String password, String pinCode, BigDecimal wallet)  {
+    public static boolean signUp(String userName, String password, String pinCode, BigDecimal wallet)  {
 
 //        Scanner sc = new Scanner(System.in);
 //        System.out.println("Please enter a valid username");
@@ -156,33 +186,34 @@ public class Data {
         //BigDecimal tempWallet = new BigDecimal(sc.nextDouble());
         //sc.close();
         if (logins.containsKey(userName)) {
-            Main.showIncorrectCredentials();
-            throw new IllegalArgumentException("Username already exists");
+            //Main.showIncorrectCredentials();
+            //throw new IllegalArgumentException("Username already exists");
+            return false;
         }
-        //Data accountInfo = new Data(userName, new BigDecimal(0), pinCode, password, wallet); //MAY BE WRONG STUFF
-        accounts.add(new Data(userName, new BigDecimal(0), pinCode, password, wallet));
-        logins.put(userName, password);
-        //logins.put(accountInfo.myUserName, accountInfo.myPassword);
-        try {
-            loginsWriter = new FileWriter(new File("logins.txt"));
-            loginsWriter.write(logins.toString());
-            loginsWriter.flush();
-            loginsWriter.close();
-        }
-        catch (IOException e) {
-            System.out.println("logins text file not found");
-        }
-        try {
-            accountsWriter = new FileWriter(new File("accounts.txt"));
-            accountsWriter.write(accounts.toString());
-            accountsWriter.flush();
-            accountsWriter.close();
-        }
-        catch (IOException e) {
-            throw new RuntimeException("accounts text file not found");
-        }
+        else {
+            //Data accountInfo = new Data(userName, new BigDecimal(0), pinCode, password, wallet); //MAY BE WRONG STUFF
+            accounts.add(new Data(userName, new BigDecimal(0), pinCode, password, wallet));
+            logins.put(userName, password);
+            //logins.put(accountInfo.myUserName, accountInfo.myPassword);
+            try {
+                loginsWriter = new FileWriter(new File("logins.txt"));
+                loginsWriter.write(logins.toString());
+                loginsWriter.flush();
+                loginsWriter.close();
+            } catch (IOException e) {
+                System.out.println("logins text file not found");
+            }
+            try {
+                accountsWriter = new FileWriter(new File("accounts.txt"));
+                accountsWriter.write(accounts.toString());
+                accountsWriter.flush();
+                accountsWriter.close();
+            } catch (IOException e) {
+                throw new RuntimeException("accounts text file not found");
+            }
 
-        return (Data)accounts.get(accounts.size()-1);
+            return true;
+        }
     }
     public static Boolean logIn(String userName, String password) {
         //below was for testing with system
@@ -237,18 +268,18 @@ public class Data {
 //        String tempEncryptedPassword = encrypt(tempPassword, key);
         if(logins.containsKey(userName)) {
             if (logins.get(userName).equals(password)) {
-                System.out.println(accounts);
+                //System.out.println(accounts);
 
                 //return (Data) accounts.get(accounts.indexOf(userName) - 1);
                 return true;
             } else {
                 //System.out.println("Username and password do not match");
-                Main.showIncorrectCredentials();
+                //Main.showIncorrectCredentials();
                 return false;
             }
         }
         else {
-            Main.showIncorrectCredentials();
+            //Main.showIncorrectCredentials();
             //System.out.println("Username and password do not match");
             return false;
         }
@@ -277,7 +308,7 @@ public class Data {
         }
         else {
             myBalance.add(amount);
-            //myWallet.subtract(amount);
+            myWallet.subtract(amount);
         }
         System.out.println("Money in wallet: " + myWallet);
         System.out.println("Money in bank: " + myBalance);

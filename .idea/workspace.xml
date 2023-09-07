@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1993f82f-5451-41b1-a06f-050e86e8349f" name="Changes" comment="A lot of stuff working">
+    <list default="true" id="1993f82f-5451-41b1-a06f-050e86e8349f" name="Changes" comment="Need to add banking features, accounts wont save multiple accounts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts.txt" beforeDir="false" afterPath="$PROJECT_DIR$/accounts.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logins.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Model/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model/Data.java" afterDir="false" />
@@ -34,13 +33,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Logan\OneDrive\Desktop\ATM GUI Practice\src\Model" />
@@ -90,26 +90,33 @@
       <option name="project" value="LOCAL" />
       <updated>1693918909440</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Need to add banking features, accounts wont save multiple accounts">
+      <created>1694074507008</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1694074507008</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="A lot of stuff working" />
-    <option name="LAST_COMMIT_MESSAGE" value="A lot of stuff working" />
+    <MESSAGE value="Need to add banking features, accounts wont save multiple accounts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Need to add banking features, accounts wont save multiple accounts" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/Model/Data.java</url>
-          <line>237</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Model/Data.java</url>
-          <line>123</line>
-          <option name="timeStamp" value="8" />
+          <line>301</line>
+          <properties class="Model.Data" method="deposit">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="23" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

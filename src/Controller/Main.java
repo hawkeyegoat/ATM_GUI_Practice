@@ -13,24 +13,25 @@ import java.math.BigDecimal;
 //import java.util.Scanner;
 
 public class Main implements ActionListener {
-    private static JLabel logInPassword1, logInLabel, signUpLabel, signUpPassword1, pinCodeLabel, walletLabel;
-    private static JTextField logInusername, signUpUserName, pincode, wallet;
-    private static JButton logInButton, signInButton, signUpButton, signUpButton2;
+    private static JLabel logInPassword1, logInLabel, signUpLabel, signUpPassword1, pinCodeLabel, walletLabel, withdrawalBalance, depositBalance, withdrawalWallet, depositWallet;
+    private static JTextField logInusername, signUpUserName, pincode, wallet, depositAmount, withdrawalAmount;
+    private static JButton logInButton, signInButton, signUpButton, signUpButton2, withdrawalB, depositB, depositSubmit, withdrawalSubmit;
     private static JPasswordField logInPassword, signUpPassword;
     private static JPanel welcomePanel;
-    private static JFrame welcomeFrame, signUpFrame, logInFrame;
+    private static JFrame welcomeFrame, signUpFrame, logInFrame, bankFrame, depositFrame;
+    private static Data currentUser;
     public static void welcome_setUp() {
         welcomePanel = new JPanel();
         //panel.setVisible(true);
         welcomePanel.setLayout(null);
         // JFrame class
-        JFrame welcomeFrame= new JFrame();
+        welcomeFrame = new JFrame();
 
         welcomeFrame.setVisible(true);
         welcomeFrame.setTitle("WELCOME");
         welcomeFrame.setLocation(new Point(500, 300));
         welcomeFrame.add(welcomePanel);
-        welcomeFrame.setSize(new Dimension(400, 200));
+        welcomeFrame.setSize(new Dimension(800, 600));
         welcomeFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         signInButton = new JButton("Login");
@@ -59,7 +60,7 @@ public class Main implements ActionListener {
         logInFrame.setTitle("LOG IN");
         logInFrame.setLocation(new Point(500, 300));
         logInFrame.add(logInPanel);
-        logInFrame.setSize(new Dimension(400, 200));
+        logInFrame.setSize(new Dimension(800, 600));
         logInFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Username label constructor
         logInLabel = new JLabel("Username");
@@ -96,7 +97,7 @@ public class Main implements ActionListener {
         signUpFrame.setTitle("signUp");
         signUpFrame.setLocation(new Point(500, 300));
         signUpFrame.add(signUpPanel);
-        signUpFrame.setSize(new Dimension(400, 200));
+        signUpFrame.setSize(new Dimension(800, 600));
         signUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Username label constructor
         signUpLabel = new JLabel("Username");
@@ -142,13 +143,74 @@ public class Main implements ActionListener {
         signUpButton2.addActionListener((ActionListener) new Main());
         signUpPanel.add(signUpButton2);
     }
+        public static void bank_setUp() {
+            JPanel bankPanel = new JPanel();
+            //panel.setVisible(true);
+            bankPanel.setLayout(null);
+            // JFrame class
+            bankFrame = new JFrame();
 
+            bankFrame.setVisible(true);
+            bankFrame.setTitle("BANKING SHIT");
+            bankFrame.setLocation(new Point(500, 300));
+            bankFrame.add(bankPanel);
+            bankFrame.setSize(new Dimension(800, 600));
+            bankFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            withdrawalB = new JButton("withdrawal");
+            withdrawalB.setBounds(100, 200, 120, 25);
+            withdrawalB.setForeground(Color.WHITE);
+            withdrawalB.setBackground(Color.BLACK);
+            withdrawalB.addActionListener((ActionListener) new Main());
+            bankPanel.add(withdrawalB);
+
+            depositB = new JButton("deposit");
+            depositB.setBounds(500, 200, 120, 25);
+            depositB.setForeground(Color.WHITE);
+            depositB.setBackground(Color.BLACK);
+            depositB.addActionListener((ActionListener) new Main());
+            bankPanel.add(depositB);
+        }
+        public static void deposit_setup() {
+            JPanel depositPanel = new JPanel();
+            depositPanel.setLayout(null);
+            depositFrame = new JFrame();
+
+            depositFrame.setVisible(true);
+            depositFrame.setTitle("Deposit");
+            depositFrame.setLocation(new Point(500, 300));
+            depositFrame.add(depositPanel);
+            depositFrame.setSize(new Dimension(800, 600));
+            depositFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            depositWallet = new JLabel("Wallet: " + currentUser.getMyWallet());
+            depositWallet.setBounds(100, 300, 120, 25);
+            depositWallet.setForeground(Color.BLACK);
+            depositWallet.setBackground(Color.BLACK);
+            depositPanel.add(depositWallet);
+
+            depositBalance = new JLabel("Balance: " + currentUser.getMyBalance());
+            depositBalance.setBounds(500, 300, 120, 25);
+            depositBalance.setForeground(Color.BLACK);
+            depositBalance.setBackground(Color.BLACK);
+            depositPanel.add(depositBalance);
+
+            depositAmount = new JTextField();
+            depositAmount.setBounds(100, 27, 193, 28);
+            depositPanel.add(depositAmount);
+
+            depositSubmit = new JButton("submit");
+            depositSubmit.setBounds(500, 200, 120, 25);
+            depositSubmit.setForeground(Color.WHITE);
+            depositSubmit.setBackground(Color.BLACK);
+            depositSubmit.addActionListener((ActionListener) new Main());
+            depositPanel.add(depositSubmit);
+        }
 
 
     public static void main(String[] args) {
         Data.loadData();
         welcome_setUp();
-
     }
 
     public static void showIncorrectCredentials() {
@@ -163,18 +225,50 @@ public class Main implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(signInButton)) {
+            //welcomeFrame.dispose();
             logIn_setUp();
+            welcomeFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            welcomeFrame.dispose();
+            //welcomePanel.setVisible(false);
         }
         if (e.getSource().equals(signUpButton)) {
             signUp_setUp();
+            welcomeFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            welcomeFrame.dispose();
         }
         if (e.getSource().equals(logInButton)) {
-            Data.logIn(logInusername.getText(), logInPassword.getText());
+            if (Data.logIn(logInusername.getText(), logInPassword.getText())) {
+                //currentUser = Data.getUser(logInusername.getText());
+                setCurrentUser(logInusername.getText());
+                System.out.println(currentUser);
+                logInFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                //logInFrame.dispose();
+                bank_setUp();
+            }
+            else {
+                showIncorrectCredentials();
+            }
         }
         if (e.getSource().equals(signUpButton2)) {
-            Data.signUp(signUpUserName.getText(), signUpPassword.getText(), pincode.getText(), new BigDecimal(Double.valueOf(wallet.getText())));
+            if (Data.signUp(signUpUserName.getText(), signUpPassword.getText(), pincode.getText(), new BigDecimal(Double.valueOf(wallet.getText())))) {
+                logIn_setUp();
+                signUpFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                signUpFrame.dispose();
+            }
+            else {
+                showIncorrectCredentials();
+            }
+        }
+        if (e.getSource().equals(depositB)) {
+            deposit_setup();
+        }
+        if (e.getSource().equals(depositSubmit)) {
+            currentUser.deposit(BigDecimal.valueOf(Double.valueOf(depositAmount.getText())));
         }
 
+    }
+    public void setCurrentUser(String name) {
+        currentUser = Data.getUser(name);
     }
 //        String Username = logInusername.getText();
 //        String Password1 = logInPassword.getText();
