@@ -51,6 +51,17 @@ public class Data {
     public String getMyUserName() {
         return myUserName;
     }
+    public String getMyPinCode() {
+        return myPinCode;
+    }
+    public Boolean checkCorrectPin(String enteredPin) {
+        if(getMyPinCode().equals(enteredPin)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public static Data getUser(String userName) {
         //System.out.println(accounts);
         int currentUser = searchAccountsByName(userName);
@@ -63,6 +74,12 @@ public class Data {
             }
         }
         return -1;
+    }
+    private void setMyWallet(BigDecimal amount) {
+        myWallet = amount;
+    }
+    private void setMyBalance(BigDecimal amount) {
+        myBalance = amount;
     }
     public static void loadData() {
         StringBuilder stb = new StringBuilder();
@@ -290,11 +307,16 @@ public class Data {
             throw new IllegalArgumentException("Please enter a positive number.");
         }
         else if (myBalance.compareTo(amount) < 0) {
+
             throw new IllegalArgumentException("You cannot withdrawal more than your balance.");
         }
         else {
-            myWallet.add(amount);
-            myBalance.subtract(amount);
+            myWallet = myWallet.add(amount);
+            myBalance = myBalance.subtract(amount);
+            int index = searchAccountsByName(getMyUserName());
+            accounts.get(index).setMyBalance(myBalance);
+            accounts.get(index).setMyWallet(myWallet);
+            writeAccounts();
         }
         System.out.println("Money in wallet: " + myWallet);
         System.out.println("Money in bank: " + myBalance);
@@ -302,17 +324,30 @@ public class Data {
     public void deposit(BigDecimal amount) {
         if (amount.compareTo(new BigDecimal(0)) < 0) {
             throw new IllegalArgumentException("Please enter a positive number.");
-        }
-        else if (myWallet.compareTo(amount) < 0) {
+        } else if (myWallet.compareTo(amount) < 0) {
             throw new IllegalArgumentException("You cannot deposit more than your wallet.");
-        }
-        else {
-            myBalance.add(amount);
-            myWallet.subtract(amount);
+        } else {
+            myBalance = myBalance.add(amount);
+            myWallet = myWallet.subtract(amount);
+            int index = searchAccountsByName(getMyUserName());
+            accounts.get(index).setMyBalance(myBalance);
+            accounts.get(index).setMyWallet(myWallet);
+            writeAccounts();
         }
         System.out.println("Money in wallet: " + myWallet);
         System.out.println("Money in bank: " + myBalance);
+    }
+
+    private void writeAccounts() {
+        try {
+            accountsWriter = new FileWriter(new File("accounts.txt"));
+            accountsWriter.write(accounts.toString());
+            accountsWriter.flush();
+            accountsWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException("accounts text file not found");
         }
+    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -327,7 +362,7 @@ public class Data {
         sb.append(myPassword);
         sb.append(":");
         sb.append(myWallet);
-        sb.append(",");
+        //sb.append(",");
         return sb.toString();
     }
     protected class dataEncryption {

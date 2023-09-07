@@ -14,11 +14,12 @@ import java.math.BigDecimal;
 
 public class Main implements ActionListener {
     private static JLabel logInPassword1, logInLabel, signUpLabel, signUpPassword1, pinCodeLabel, walletLabel, withdrawalBalance, depositBalance, withdrawalWallet, depositWallet;
-    private static JTextField logInusername, signUpUserName, pincode, wallet, depositAmount, withdrawalAmount;
-    private static JButton logInButton, signInButton, signUpButton, signUpButton2, withdrawalB, depositB, depositSubmit, withdrawalSubmit;
+    private static JTextField logInusername, signUpUserName, pincode, wallet, depositAmount, withdrawalAmount,
+    depositPin, withdrawalPin;
+    private static JButton logInButton, signInButton, signUpButton, signUpButton2, withdrawalB, depositB, depositSubmit, withdrawalSubmit, depositBackB, withdrawalBackB;
     private static JPasswordField logInPassword, signUpPassword;
     private static JPanel welcomePanel;
-    private static JFrame welcomeFrame, signUpFrame, logInFrame, bankFrame, depositFrame;
+    private static JFrame welcomeFrame, signUpFrame, logInFrame, bankFrame, depositFrame, withdrawalFrame;
     private static Data currentUser;
     public static void welcome_setUp() {
         welcomePanel = new JPanel();
@@ -184,29 +185,81 @@ public class Main implements ActionListener {
             depositFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             depositWallet = new JLabel("Wallet: " + currentUser.getMyWallet());
-            depositWallet.setBounds(100, 300, 120, 25);
+            depositWallet.setBounds(240, 60, 120, 25);
             depositWallet.setForeground(Color.BLACK);
             depositWallet.setBackground(Color.BLACK);
             depositPanel.add(depositWallet);
 
             depositBalance = new JLabel("Balance: " + currentUser.getMyBalance());
-            depositBalance.setBounds(500, 300, 120, 25);
+            depositBalance.setBounds(100, 60, 120, 25);
             depositBalance.setForeground(Color.BLACK);
             depositBalance.setBackground(Color.BLACK);
             depositPanel.add(depositBalance);
 
             depositAmount = new JTextField();
-            depositAmount.setBounds(100, 27, 193, 28);
+            depositAmount.setBounds(100, 27, 120, 25);
             depositPanel.add(depositAmount);
 
             depositSubmit = new JButton("submit");
-            depositSubmit.setBounds(500, 200, 120, 25);
+            depositSubmit.setBounds(230, 27, 120, 25);
             depositSubmit.setForeground(Color.WHITE);
             depositSubmit.setBackground(Color.BLACK);
             depositSubmit.addActionListener((ActionListener) new Main());
             depositPanel.add(depositSubmit);
-        }
 
+            depositBackB = new JButton("back");
+            depositBackB.setBounds(350, 27, 120, 25);
+            depositBackB.setForeground(Color.WHITE);
+            depositBackB.setBackground(Color.BLACK);
+            depositBackB.addActionListener((ActionListener) new Main());
+            depositPanel.add(depositBackB);
+        }
+    public static void withdrawal_setup() {
+        JPanel withdrawalPanel = new JPanel();
+        withdrawalPanel.setLayout(null);
+        withdrawalFrame = new JFrame();
+
+        withdrawalFrame.setVisible(true);
+        withdrawalFrame.setTitle("Withdrawal");
+        withdrawalFrame.setLocation(new Point(500, 300));
+        withdrawalFrame.add(withdrawalPanel);
+        withdrawalFrame.setSize(new Dimension(800, 600));
+        withdrawalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        withdrawalWallet = new JLabel("Wallet: " + currentUser.getMyWallet());
+        withdrawalWallet.setBounds(240, 60, 120, 25);
+        withdrawalWallet.setForeground(Color.BLACK);
+        withdrawalWallet.setBackground(Color.BLACK);
+        withdrawalPanel.add(withdrawalWallet);
+
+        withdrawalBalance = new JLabel("Balance: " + currentUser.getMyBalance());
+        withdrawalBalance.setBounds(100, 60, 120, 25);
+        withdrawalBalance.setForeground(Color.BLACK);
+        withdrawalBalance.setBackground(Color.BLACK);
+        withdrawalPanel.add(withdrawalBalance);
+
+        withdrawalAmount = new JTextField();
+        withdrawalAmount.setBounds(100, 27, 120, 25);
+        withdrawalPanel.add(withdrawalAmount);
+
+        withdrawalSubmit = new JButton("submit");
+        withdrawalSubmit.setBounds(230, 27, 120, 25);
+        withdrawalSubmit.setForeground(Color.WHITE);
+        withdrawalSubmit.setBackground(Color.BLACK);
+        withdrawalSubmit.addActionListener((ActionListener) new Main());
+        withdrawalPanel.add(withdrawalSubmit);
+
+        withdrawalBackB = new JButton("back");
+        withdrawalBackB.setBounds(350, 27, 120, 25);
+        withdrawalBackB.setForeground(Color.WHITE);
+        withdrawalBackB.setBackground(Color.BLACK);
+        withdrawalBackB.addActionListener((ActionListener) new Main());
+        withdrawalPanel.add(withdrawalBackB);
+
+//        withdrawalPin = new JTextField("PIN");
+//        withdrawalAmount.setBounds(100, 60, 120, 25);
+//        withdrawalPanel.add(withdrawalAmount);
+    }
 
     public static void main(String[] args) {
         Data.loadData();
@@ -242,7 +295,7 @@ public class Main implements ActionListener {
                 setCurrentUser(logInusername.getText());
                 System.out.println(currentUser);
                 logInFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-                //logInFrame.dispose();
+                logInFrame.dispose();
                 bank_setUp();
             }
             else {
@@ -260,12 +313,35 @@ public class Main implements ActionListener {
             }
         }
         if (e.getSource().equals(depositB)) {
+            bankFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            bankFrame.dispose();
             deposit_setup();
+        }
+        if (e.getSource().equals(withdrawalB)) {
+            bankFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            bankFrame.dispose();
+            withdrawal_setup();
         }
         if (e.getSource().equals(depositSubmit)) {
             currentUser.deposit(BigDecimal.valueOf(Double.valueOf(depositAmount.getText())));
+            depositWallet.setText("Wallet: " + currentUser.getMyWallet());
+            depositBalance.setText("Balance: " + currentUser.getMyBalance());
         }
-
+        if (e.getSource().equals(withdrawalSubmit)) {
+            currentUser.withdrawal(BigDecimal.valueOf(Double.valueOf(depositAmount.getText())));
+            withdrawalWallet.setText("Wallet: " + currentUser.getMyWallet());
+            withdrawalBalance.setText("Balance: " + currentUser.getMyBalance());
+        }
+        if (e.getSource().equals(depositBackB)) {
+            depositFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            depositFrame.dispose();
+            bank_setUp();
+        }
+        if (e.getSource().equals(withdrawalBackB)) {
+            withdrawalFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            withdrawalFrame.dispose();
+            bank_setUp();
+        }
     }
     public void setCurrentUser(String name) {
         currentUser = Data.getUser(name);
